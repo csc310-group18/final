@@ -20,14 +20,8 @@ void binaryFile::readData(string inputFileName){
     if( inputFile.is_open() ){
         try{
 
-            // Read records from txt file into employeeArray
+            // Convert records in text file to binary file
             p_ReadData(inputFile);
-
-            // Print employeeArray
-            //p_PrintArray(employeeArray);
-
-            // Write records from employeeArray to binary file
-            p_WriteBinary(); 
 
             // Read records from binary file into dataArray
             p_ReadBinary(); 
@@ -140,44 +134,49 @@ bool binaryFile::updateEmployeeName(s_EMPLOYEE employee){
 void binaryFile::p_ReadData(fstream &inputFile){
 
     string inputLine;
-
-    // Scan file to determine number of records
-    while( getline(inputFile, inputLine) ){
-        numEmployees++;
-    }
-
-    // Return file pointer to start of file
-    inputFile.clear();
-    inputFile.seekg(0,ios::beg);
-
-    // Create array to store employees
-    employeeArray = new s_EMPLOYEE[numEmployees];
-
-    // Read records into employee array
     int commaArray[2], i = 0, inputLineNumber = 0, inputLineDept = 0;
-    string inputLineName;
 
-    while( getline(inputFile, inputLine) ){
-        commaArray[0] = inputLine.find(",");
-        commaArray[1] = inputLine.find(",", commaArray[0]+1);
+    fstream outputFile;
+    outputFile.open(binaryFileName, ios::out|ios::binary);
 
-        inputLineDept = atoi(inputLine.substr(0, commaArray[0]).c_str());
-        inputLineNumber = atoi(inputLine.substr(commaArray[0]+1, commaArray[1]-1).c_str());
-        inputLineName = inputLine.substr(commaArray[1]+1, inputLine.length());
+    // Read records from txt file
+    if( outputFile.is_open() ){
 
-        // Add record to employee array 
-        // if name is 30 characters or less
-        if( inputLineName.length() <= 30 ){
-            employeeArray[i].department = e_DEPT(inputLineDept);
-            employeeArray[i].number = inputLineNumber;
-            employeeArray[i].name = inputLineName;
-        }else{
-            // reduce employee count
-            numEmployees--;
-        }
+        while( getline(inputFile, inputLine) ){
+            commaArray[0] = inputLine.find(",");
+            commaArray[1] = inputLine.find(",", commaArray[0]+1);
+            string inputLineName;
 
-        i++;
+            inputLineDept = atoi(inputLine.substr(0, commaArray[0]).c_str());
+            inputLineNumber = atoi(inputLine.substr(commaArray[0]+1, commaArray[1]-1).c_str());
+            inputLineName = inputLine.substr(commaArray[1]+1, inputLine.length());
+
+            // Write record to binary file
+            // if employee name is 30 characters or less
+            if( inputLineName.length() <= 30 ){
+
+                numEmployees++; // increase employee count
+
+                s_EMPLOYEE *tmpEmployee = new s_EMPLOYEE;
+                tmpEmployee->department = e_DEPT(inputLineDept);
+                tmpEmployee->number = inputLineNumber;
+                tmpEmployee->name = inputLineName;
+
+                outputFile.write((char*)tmpEmployee, sizeof(s_EMPLOYEE));
+
+            }else{
+                // TODO: throw an error that name is too long?
+            }
+            i++;
+
+        } // end while
+    }else{
+        //TODO: throw exception can't open output file
     }
+
+    // Close binary output file
+    outputFile.close();
+
 }
 
 /**************************** PRIVATE: p_PrintArray ****************************/
@@ -187,28 +186,6 @@ void binaryFile::p_PrintArray(s_EMPLOYEE *arr){
         cout<<arr[i].department<<" ";
         cout<<arr[i].number<<" ";
         cout<<arr[i].name<<endl;
-    }
-}
-
-/**************************** PRIVATE: p_WriteBinary ****************************/
-void binaryFile::p_WriteBinary(){
-    fstream outputFile;
-    outputFile.open(binaryFileName, ios::out|ios::binary);
-
-    if( outputFile.is_open() ){
-         try{
-
-            outputFile.write((char*)employeeArray, sizeof(s_EMPLOYEE) * numEmployees);
-            outputFile.close();
-        }
-        catch( myException &exc ){
-
-            throw (exc.what(), exc.retrieveCode());
-        }
-    }
-    else{
-
-        throw myException("Cannot open ouput file.", ERROR);
     }
 }
 

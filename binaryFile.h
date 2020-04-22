@@ -32,12 +32,10 @@ class binaryFile{
     private:
         string binaryFileName;
         int numEmployees;
-        s_EMPLOYEE *employeeArray; // created with text file data
         s_EMPLOYEE *dataArray; // created with binary file data
 
         void p_ReadData(fstream&);
         void p_PrintArray(s_EMPLOYEE*);
-        void p_WriteBinary();
         void p_ReadBinary();
         void p_SortData(void);
         int  p_FindEmployee(e_DEPT, int);
