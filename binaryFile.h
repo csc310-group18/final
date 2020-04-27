@@ -2,29 +2,19 @@
 #define __BINARY_FILE__H__
 
 #include "customErrorClass.h"
+#include "dataStructs.h"
+#include "list.h"
+#include <string.h>
 #include <iostream>
 #include <fstream>
 
-typedef enum Department{
-    ACCOUNTING,
-    BUSINESS,
-    HUMAN_RESOURCES,
-    SALES,
-    PRODUCTION
-}e_DEPT;
+using namespace std;
 
-typedef struct Employee{
-    e_DEPT department; 
-    int number; 
-    string name; 
-}s_EMPLOYEE;
-
-class binaryFile{
+class binaryFile {
     
     public:
         binaryFile(void);
         void readData(string);
-        void sortData(void);
         bool findEmployee(e_DEPT, int);
         s_EMPLOYEE getEmployeeDetails(e_DEPT, int);
         bool updateEmployeeName(s_EMPLOYEE);
@@ -32,15 +22,20 @@ class binaryFile{
     private:
         string binaryFileName;
         int numEmployees;
+
+        list *departments;
+
         s_EMPLOYEE *dataArray; // created with binary file data
 
         void p_ReadData(fstream&);
         void p_PrintArray(s_EMPLOYEE*);
+        void p_WriteBinary();
         void p_ReadBinary();
         void p_SortData(void);
         int  p_FindEmployee(e_DEPT, int);
         s_EMPLOYEE p_GetEmployeeDetails(e_DEPT, int);
         bool p_UpdateEmployeeName(s_EMPLOYEE);
+
 };
 
 #endif
