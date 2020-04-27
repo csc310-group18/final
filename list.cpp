@@ -192,7 +192,7 @@ int list::p_DeleteNode(s_NODE *nodeToDelete)
 {
     int retVal = 1;
     
-    //cout << "\tDeleting value: " << nodeToDelete->value << endl;
+    //cout << "\tDeleting node: " << nodeToDelete->employee.number << endl;
 
     // Delete the appropriate connections
     if (nodeToDelete->previous != nullptr && nodeToDelete->next != nullptr) // internal node

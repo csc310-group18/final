@@ -202,26 +202,25 @@ void binaryFile::p_WriteBinary(){
     if(outputFile.is_open()) {
 
         int i = 0, j = 0;
+
         for (i = 0; i < NUM_DEPARTMENTS; i++) {
             if (&departments[i] != nullptr) {
                 try {
                     list *currDept = &departments[i];
                     s_NODE *currNode;
-                    s_EMPLOYEE currEmployee;
-                    s_EMPLOYEE *employeeBuffer = new s_EMPLOYEE();
+                    s_EMPLOYEE currEmployee; // s_EMPLOYEE struct buffer
 
+                    // traverse through each department linked list
                     for (currNode = currDept->getHead(); currNode != nullptr; currNode = currNode->next) {
-                    
+                        
+                        // get s_EMPLOYEE struct from each list s_NODE
                         currEmployee = currNode->employee;
 
-                        employeeBuffer->department = currEmployee.department;
-                        employeeBuffer->number = currEmployee.number;
-                        strcpy(employeeBuffer->name, currEmployee.name);
-
-                        outputFile.write((char*)employeeBuffer, sizeof(s_EMPLOYEE));
+                        // write employeeBuffer to binary file
+                        outputFile.write((char*)&currEmployee, sizeof(s_EMPLOYEE));
                     }
-
-                    delete employeeBuffer;
+                    // deallocate list when finished writing binary
+                    currDept->deleteList(); 
 
                 }
                 catch(myException &exc) {
@@ -229,8 +228,8 @@ void binaryFile::p_WriteBinary(){
                 }
             }
         }
+
         outputFile.close();
-     
     }
     else {
         throw myException("Cannot open ouput file.", ERROR);
