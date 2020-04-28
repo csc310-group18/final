@@ -16,9 +16,10 @@ class binaryFile {
     public:
         binaryFile(void);
         void readData(string);
-        bool findEmployee(e_DEPT, int);
+        bool findEmployee(int, int);
         s_EMPLOYEE getEmployeeDetails(e_DEPT, int);
         bool updateEmployeeName(s_EMPLOYEE);
+        
         void outputData(s_EMPLOYEE[], int);
 
         void findEmployeeOutput(e_DEPT, int);

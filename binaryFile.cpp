@@ -56,14 +56,14 @@ void binaryFile::readData(string inputFileName) {
 }
 
 /**************************** PUBLIC: findEmployee ****************************/
-bool binaryFile::findEmployee(e_DEPT department, int number){
+bool binaryFile::findEmployee(int department, int number){
 
     int retOffset = -1;
     bool retValue = false;
 
     try {
 
-        retOffset = p_FindEmployee(department, number);
+        retOffset = p_FindEmployee(e_DEPT(department), number);
     }
     catch( myException &exc ){
 
