@@ -2,6 +2,7 @@
 #include "list.h"
 #include "customErrorClass.h"
 
+
 /**************************** PUBLIC: Constructor ****************************/
 binaryFile::binaryFile() {
     binaryFileName = "";
@@ -250,13 +251,13 @@ void binaryFile::p_SortData() {
         list *currDept;
         currDept = &departments[i];
         if (currDept == nullptr) {
-            cout << "Department " << e_DEPT(i) << " is empty." << endl;
+            //cout << "Department " << e_DEPT(i) << " is empty." << endl;
 
         } else if (currDept->isSorted() == 1) {
-            cout << "Department " << e_DEPT(i) << " already sorted." << endl;
+            //cout << "Department " << e_DEPT(i) << " already sorted." << endl;
         }
         else {
-            cout << "Sorting department: " << e_DEPT(i) << endl;
+            //cout << "Sorting department: " << e_DEPT(i) << endl;
             currDept->sortList();
         }
 
@@ -347,30 +348,30 @@ bool binaryFile::p_UpdateEmployeeName(s_EMPLOYEE employee) {
 
 /*******************************************************************/
 
-/**************************** STATC PUBLIC: departmentString ****************************/
+/**************************** PUBLIC: departmentString ****************************/
 string binaryFile::departmentString(Department department){
     
     string  departmentString [] = {"ACCOUNTING", "BUSINESS", "HUMAN RESOURCES", "SALES", "PRODUCTION"};
     
     return departmentString[(int)department];
 }
-/**************************** STATC PUBLIC: findEmployeeOutput ****************************/
-void binaryFile::findEmployeeOutput(binaryFile records, e_DEPT department, int number){
+/**************************** PUBLIC: findEmployeeOutput ****************************/
+void binaryFile::findEmployeeOutput(e_DEPT department, int number){
      
-    if(records.findEmployee(department, number)){
+    if(findEmployee(department, number)){
         cout << "Employee found." << endl;
     }
     else{
         cout << "Employee not found." << endl;
     }
 }
-/**************************** STATC PUBLIC: getEmployeeDetailsOutput ****************************/
-void binaryFile::getEmployeeDetailsOutput(binaryFile records, e_DEPT department, int number){
+/**************************** PUBLIC: getEmployeeDetailsOutput ****************************/
+void binaryFile::getEmployeeDetailsOutput(e_DEPT department, int number){
 
     s_EMPLOYEE employee;
 
     try {
-        employee = records.getEmployeeDetails(department, number);
+        employee = getEmployeeDetails(department, number);
         cout << "*******EMPLOYEE DETAILS*******" << endl;
         cout << "\t    Department: " << departmentString(employee.department) << endl;
         cout << "\t    Employee Number: " << employee.number << endl;
@@ -380,10 +381,10 @@ void binaryFile::getEmployeeDetailsOutput(binaryFile records, e_DEPT department,
         cout << "Employee not found. Employee Details cannot be displayed." << endl;
     }
 }
-/**************************** STATC PUBLIC: updateEmployeeNameOutput ****************************/
-void binaryFile::updateEmployeeNameOutput(binaryFile records, s_EMPLOYEE employee){
+/**************************** PUBLIC: updateEmployeeNameOutput ****************************/
+void binaryFile::updateEmployeeNameOutput(s_EMPLOYEE employee){
             
-    if( records.updateEmployeeName(employee) ){
+    if( updateEmployeeName(employee) ){
 
         cout << "Employee updated." << endl;
         // For testing purposes.. See if the name was updated 
@@ -392,4 +393,41 @@ void binaryFile::updateEmployeeNameOutput(binaryFile records, s_EMPLOYEE employe
     else{
         cout << "Employee not updated." << endl;
     }     
+}
+
+
+void binaryFile::outputData(s_EMPLOYEE employees[], int numEmployees){
+
+    int i = 0;
+
+    // FIND EMPLOYEE
+    cout << endl << "========================================" << endl
+                 << "FIND EMPLOYEE" << endl
+                 << "========================================" << endl;
+    for( i = 0; i < numEmployees; i++){
+        cout << left << setw(8) << employees[i].name << ": " ;
+        
+        findEmployeeOutput(employees[i].department, employees[i].number);
+    }
+    
+    // GET EMPLOYEE DETAILS
+    cout << endl << "========================================" << endl
+                 << "GET EMPLOYEE DETAILS" << endl
+                 << "========================================" << endl;
+    for( i = 0; i < numEmployees; i++ ){
+        cout << left << setw(8) << employees[i].name << ": " ;
+
+        getEmployeeDetailsOutput(employees[i].department, employees[i].number);
+    }
+
+    // UPDATE EMPLOYEE NAME
+    cout << endl << "========================================" << endl
+                 << "UPDATE EMPLOYEE NAME" << endl
+                 << "========================================" << endl;
+    for( i = 0; i < numEmployees; i++ ){
+        cout << left << setw(8) << employees[i].name << ": " ;
+        strcat(employees[i].name,"NEW"); 
+
+        updateEmployeeNameOutput( employees[i]);   
+    }
 }

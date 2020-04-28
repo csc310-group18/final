@@ -7,6 +7,7 @@
 #include <string.h>
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 
 using namespace std;
 
@@ -18,11 +19,12 @@ class binaryFile {
         bool findEmployee(e_DEPT, int);
         s_EMPLOYEE getEmployeeDetails(e_DEPT, int);
         bool updateEmployeeName(s_EMPLOYEE);
+        void outputData(s_EMPLOYEE[], int);
 
-        static void findEmployeeOutput(binaryFile, e_DEPT, int);
-        static string departmentString(Department);
-        static void getEmployeeDetailsOutput(binaryFile, e_DEPT, int);
-        static void updateEmployeeNameOutput(binaryFile, s_EMPLOYEE);
+        void findEmployeeOutput(e_DEPT, int);
+        string departmentString(Department);
+        void getEmployeeDetailsOutput(e_DEPT, int);
+        void updateEmployeeNameOutput(s_EMPLOYEE);
 
     private:
         string binaryFileName;
