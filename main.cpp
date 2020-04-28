@@ -48,14 +48,20 @@ int main(int argc, char *argv[]){
             cout << "Employee not found" << endl;
         }
 
-        //string employeeName = records.findEmployee(deptBuffer, employeeNumBuffer);
-        // TODO: modify findEmployee()so it returns a string
-        // and print employee details
+        string employeeName = "";
+        employeeName = records.getEmployeeDetails(deptBuffer, employeeNumBuffer);
+        if (employeeName != ""){
+            cout << "*******EMPLOYEE DETAILS*******" << endl;
+            cout << "\t    Department: " << records.getDepartment(deptBuffer) << endl;
+            cout << "\t    Employee Number: " << employeeNumBuffer << endl;
+            cout << "\t    Employee Name: " << employeeName << endl << endl;
+        }
+
 
         bool employeeUpdated;
         //employeeUpdated = records.updateEmployeeName(deptBuffer, employeeNumBuffer);
         //TODO: modify updateEmployeeName to take (int int)
-        if (employeeFound) {
+        if (employeeUpdated) {
             cout << "Employee updated" << endl;
         } else {
             cout << "Employee not updated" << endl;

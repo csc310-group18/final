@@ -17,15 +17,18 @@ class binaryFile {
         binaryFile(void);
         void readData(string);
         bool findEmployee(int, int);
-        s_EMPLOYEE getEmployeeDetails(e_DEPT, int);
+        string getEmployeeDetails(int, int);
         bool updateEmployeeName(s_EMPLOYEE);
         
-        void outputData(s_EMPLOYEE[], int);
+        string getDepartment(int);
 
+        /*
+        void outputData(s_EMPLOYEE[], int);
         void findEmployeeOutput(e_DEPT, int);
         string departmentString(Department);
         void getEmployeeDetailsOutput(e_DEPT, int);
         void updateEmployeeNameOutput(s_EMPLOYEE);
+        */
 
     private:
         string binaryFileName;

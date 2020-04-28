@@ -83,19 +83,25 @@ bool binaryFile::findEmployee(int department, int number){
 }
 
 /**************************** PUBLIC: getEmployeeDetails ****************************/
-s_EMPLOYEE binaryFile::getEmployeeDetails(e_DEPT department, int number){
+string binaryFile::getEmployeeDetails(int department, int number){
     
     s_EMPLOYEE retEmployee;
 
     try{
-        retEmployee = p_GetEmployeeDetails(department, number);
+        retEmployee = p_GetEmployeeDetails(e_DEPT(department), number);
     }
     catch( myException &exc ){
 
         throw myException(exc.what(), exc.retrieveCode());
     }
+    int nameLength = strlen(retEmployee.name);
+    string name = "";
 
-    return retEmployee;
+    int i = 0;
+    for (i = 0; i < nameLength; i++) {
+        name += retEmployee.name[i];
+    }
+    return name;
 }
 
 /**************************** PUBLIC: updateEmployeeName ****************************/
@@ -344,18 +350,35 @@ bool binaryFile::p_UpdateEmployeeName(s_EMPLOYEE employee) {
     return retValue;
 }
 
+/**************************** PUBLIC: getDepartment ****************************/
+string binaryFile::getDepartment(int deptNum){
+    
+    string  departmentString [] = {"ACCOUNTING", "BUSINESS", "HUMAN RESOURCES", "SALES", "PRODUCTION"};
+    
+    if (deptNum >= 0 && deptNum < NUM_DEPARTMENTS) {
+        return departmentString[deptNum];
+    }
+    else {
+        throw myException("department number out of range", ERROR);
+    }
+    
+}
 
 
 /*******************************************************************/
 
 /**************************** PUBLIC: departmentString ****************************/
+/*
 string binaryFile::departmentString(Department department){
     
     string  departmentString [] = {"ACCOUNTING", "BUSINESS", "HUMAN RESOURCES", "SALES", "PRODUCTION"};
     
     return departmentString[(int)department];
-}
+}*/
+
+
 /**************************** PUBLIC: findEmployeeOutput ****************************/
+/*
 void binaryFile::findEmployeeOutput(e_DEPT department, int number){
      
     if(findEmployee(department, number)){
@@ -364,8 +387,9 @@ void binaryFile::findEmployeeOutput(e_DEPT department, int number){
     else{
         cout << "Employee not found." << endl;
     }
-}
+}*/
 /**************************** PUBLIC: getEmployeeDetailsOutput ****************************/
+/*
 void binaryFile::getEmployeeDetailsOutput(e_DEPT department, int number){
 
     s_EMPLOYEE employee;
@@ -380,8 +404,9 @@ void binaryFile::getEmployeeDetailsOutput(e_DEPT department, int number){
     catch( myException &exc){
         cout << "Employee not found. Employee Details cannot be displayed." << endl;
     }
-}
+}*/
 /**************************** PUBLIC: updateEmployeeNameOutput ****************************/
+/*
 void binaryFile::updateEmployeeNameOutput(s_EMPLOYEE employee){
             
     if( updateEmployeeName(employee) ){
@@ -430,4 +455,4 @@ void binaryFile::outputData(s_EMPLOYEE employees[], int numEmployees){
 
         updateEmployeeNameOutput( employees[i]);   
     }
-}
+}*/
