@@ -19,13 +19,17 @@ class binaryFile {
         s_EMPLOYEE getEmployeeDetails(e_DEPT, int);
         bool updateEmployeeName(s_EMPLOYEE);
 
+        static void findEmployeeOutput(binaryFile, e_DEPT, int);
+        static string departmentString(Department);
+        static void getEmployeeDetailsOutput(binaryFile, e_DEPT, int);
+        static void updateEmployeeNameOutput(binaryFile, s_EMPLOYEE);
+
     private:
         string binaryFileName;
         int numEmployees;
-
         list *departments;
-
         s_EMPLOYEE *dataArray; // created with binary file data
+        int * indexArray;
 
         void p_ReadData(fstream&);
         void p_PrintArray(s_EMPLOYEE*);
@@ -36,6 +40,7 @@ class binaryFile {
         s_EMPLOYEE p_GetEmployeeDetails(e_DEPT, int);
         bool p_UpdateEmployeeName(s_EMPLOYEE);
 
+        
 };
 
 #endif

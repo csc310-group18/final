@@ -33,10 +33,11 @@ void binaryFile::readData(string inputFileName) {
             p_WriteBinary(); 
 
             // Read records from binary file into dataArray
-            p_ReadBinary(); 
+            // p_ReadBinary(); 
 
             // Print dataArray
-            p_PrintArray(dataArray);
+            // p_PrintArray(dataArray);
+
         }
         catch( myException &exc ){
 
@@ -53,24 +54,6 @@ void binaryFile::readData(string inputFileName) {
 
 }
 
-/**************************** PUBLIC: sortData ****************************/
-/*
-void binaryFile::sortData(){
-
-    bool retValue = false;
-
-    try{
-
-        p_SortData();
-    }
-    catch( myException &exc ){
-
-        throw(exc.what(), exc.retrieveCode());
-    }
-
-}
-*/
-
 /**************************** PUBLIC: findEmployee ****************************/
 bool binaryFile::findEmployee(e_DEPT department, int number){
 
@@ -79,7 +62,7 @@ bool binaryFile::findEmployee(e_DEPT department, int number){
 
     try {
 
-        retOffset = findEmployee(department, number);
+        retOffset = p_FindEmployee(department, number);
     }
     catch( myException &exc ){
 
@@ -103,20 +86,12 @@ s_EMPLOYEE binaryFile::getEmployeeDetails(e_DEPT department, int number){
     
     s_EMPLOYEE retEmployee;
 
-    if ( findEmployee(department, number) ){
-
-        try{
-
-            retEmployee = p_GetEmployeeDetails(department, number);
-        }
-        catch( myException &exc ){
-
-            throw myException(exc.what(), exc.retrieveCode());
-        }
+    try{
+        retEmployee = p_GetEmployeeDetails(department, number);
     }
-    else{
+    catch( myException &exc ){
 
-        throw myException("Cannot get employee details. Employee does not exist.");
+        throw myException(exc.what(), exc.retrieveCode());
     }
 
     return retEmployee;
@@ -128,12 +103,11 @@ bool binaryFile::updateEmployeeName(s_EMPLOYEE employee){
     bool retValue = false;
 
     try{
-
         retValue = p_UpdateEmployeeName(employee);
     }
     catch( myException &exc ){
         
-        throw myException(exc.what(), exc.retrieveCode());
+        throw myException(exc.what());
     }
     
     return retValue;
@@ -203,7 +177,12 @@ void binaryFile::p_WriteBinary(){
 
         int i = 0, j = 0;
 
+        indexArray =  new int [NUM_DEPARTMENTS];
+
         for (i = 0; i < NUM_DEPARTMENTS; i++) {
+            // record current position in the file as the index for the current department
+            indexArray[i] = outputFile.tellp();
+
             if (&departments[i] != nullptr) {
                 try {
                     list *currDept = &departments[i];
@@ -287,7 +266,34 @@ void binaryFile::p_SortData() {
 /**************************** PRIVATE: p_FindEmployee ****************************/
 int binaryFile::p_FindEmployee(e_DEPT department, int number) {
     
+    fstream dataFile;
+    s_EMPLOYEE tempEmployee;
     int retOffset = -1;
+    int tempOffset;
+    dataFile.open(binaryFileName, ios::in|ios::binary);
+    
+
+    if( dataFile.is_open() ){
+        //use index to move to the appropriate spot
+        dataFile.seekg(indexArray[(int)department]);
+       
+        dataFile.read((char*)&tempEmployee, sizeof(s_EMPLOYEE));
+        tempOffset = dataFile.tellp();
+
+        while(!dataFile.eof() && tempEmployee.department == department 
+                && tempEmployee.number <= number &&  retOffset == -1 ){
+
+            if(tempEmployee.number == number){
+                retOffset = tempOffset;
+            }
+
+            tempOffset = dataFile.tellp();
+            dataFile.read((char*)&tempEmployee, sizeof(s_EMPLOYEE));
+        }
+
+    }
+
+    dataFile.close();
 
     return retOffset;
 }
@@ -295,7 +301,20 @@ int binaryFile::p_FindEmployee(e_DEPT department, int number) {
 /**************************** PRIVATE: p_GetEmployeeDetails ****************************/
 s_EMPLOYEE binaryFile::p_GetEmployeeDetails(e_DEPT department, int number) {
    
+    fstream dataFile;
     s_EMPLOYEE retEmployee;
+    int offset;
+    
+    offset = p_FindEmployee(department, number);
+
+    if(offset ==  -1){
+        throw myException("Cannot get employee details. Employee does not exist.", WARNING);
+    }
+    else{
+        dataFile.open(binaryFileName, ios::in|ios::binary);
+        dataFile.seekg(offset, ios::beg);
+        dataFile.read((char*)&retEmployee, sizeof(s_EMPLOYEE));
+    }
 
     return retEmployee;
 }
@@ -303,8 +322,74 @@ s_EMPLOYEE binaryFile::p_GetEmployeeDetails(e_DEPT department, int number) {
 /**************************** PRIVATE: p_UpdateEmployeeName ****************************/
 bool binaryFile::p_UpdateEmployeeName(s_EMPLOYEE employee) {
 
+    fstream dataFile;
     bool retValue = false;
+    int tempOffset; 
+
+    tempOffset = p_FindEmployee(employee.department, employee.number);
+
+    if( tempOffset != -1 ){
+        
+        dataFile.open(binaryFileName, ios::in|ios::out|ios::binary);
+
+        if(dataFile.is_open()){
+            dataFile.seekp(tempOffset, ios::beg);
+            dataFile.write((char*)&employee, sizeof(s_EMPLOYEE));
+            retValue = true;
+        }
+        dataFile.close();
+    }    
 
     return retValue;
 }
 
+
+
+/*******************************************************************/
+
+/**************************** STATC PUBLIC: departmentString ****************************/
+string binaryFile::departmentString(Department department){
+    
+    string  departmentString [] = {"ACCOUNTING", "BUSINESS", "HUMAN RESOURCES", "SALES", "PRODUCTION"};
+    
+    return departmentString[(int)department];
+}
+/**************************** STATC PUBLIC: findEmployeeOutput ****************************/
+void binaryFile::findEmployeeOutput(binaryFile records, e_DEPT department, int number){
+     
+    if(records.findEmployee(department, number)){
+        cout << "Employee found." << endl;
+    }
+    else{
+        cout << "Employee not found." << endl;
+    }
+}
+/**************************** STATC PUBLIC: getEmployeeDetailsOutput ****************************/
+void binaryFile::getEmployeeDetailsOutput(binaryFile records, e_DEPT department, int number){
+
+    s_EMPLOYEE employee;
+
+    try {
+        employee = records.getEmployeeDetails(department, number);
+        cout << "*******EMPLOYEE DETAILS*******" << endl;
+        cout << "\t    Department: " << departmentString(employee.department) << endl;
+        cout << "\t    Employee Number: " << employee.number << endl;
+        cout << "\t    Employee Name: " << employee.name << endl << endl;
+    }
+    catch( myException &exc){
+        cout << "Employee not found. Employee Details cannot be displayed." << endl;
+    }
+}
+/**************************** STATC PUBLIC: updateEmployeeNameOutput ****************************/
+void binaryFile::updateEmployeeNameOutput(binaryFile records, s_EMPLOYEE employee){
+            
+    if( records.updateEmployeeName(employee) ){
+
+        cout << "Employee updated." << endl;
+        // For testing purposes.. See if the name was updated 
+        // getEmployeeDetailsOutput(records, employee.department, employee.number);    
+    }
+    else{
+        cout << "Employee not updated." << endl;
+    }     
+}
