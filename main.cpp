@@ -40,14 +40,27 @@ int main(int argc, char *argv[]){
         testRecordsFile >> deptBuffer;
         testRecordsFile >> employeeNumBuffer;
 
-        bool employeeFound = records.findEmployee(deptBuffer, employeeNumBuffer);
+        bool employeeFound;
+        employeeFound = records.findEmployee(deptBuffer, employeeNumBuffer);
         if (employeeFound) {
-            //cout << "Employee << " << employeeNumBuffer << " found" << endl;
             cout << "Employee found" << endl;
         } else {
-            //cout << "Employee << " << employeeNumBuffer << " not found" << endl;
             cout << "Employee not found" << endl;
         }
+
+        //string employeeName = records.findEmployee(deptBuffer, employeeNumBuffer);
+        // TODO: modify findEmployee()so it returns a string
+        // and print employee details
+
+        bool employeeUpdated;
+        //employeeUpdated = records.updateEmployeeName(deptBuffer, employeeNumBuffer);
+        //TODO: modify updateEmployeeName to take (int int)
+        if (employeeFound) {
+            cout << "Employee updated" << endl;
+        } else {
+            cout << "Employee not updated" << endl;
+        }
+
     }
 
 
