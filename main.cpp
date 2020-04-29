@@ -16,15 +16,20 @@ int main(int argc, char *argv[]){
         mainDataFilename = argv[1]; // from command line arg if present
     } 
     else {
-        mainDataFilename = "smallOutput.txt"; 
-        //mainDataFilename = "mediumOutput.txt";
-        //mainDataFilename = "largeOutput.txt";
-        //mainDataFilename = "largeOutput_unsorted.txt";
+        mainDataFilename = "data/smallOutput.txt"; 
+        //mainDataFilename = "data/mediumOutput.txt";
+        //mainDataFilename = "data/largeOutput.txt";
+        //mainDataFilename = "data/largeOutput_unsorted.txt";
     }
 
     // Read data from txt file
     binaryFile records;
-    records.readData(mainDataFilename);  // all employee records
+    try{
+        records.readData(mainDataFilename);  // all employee records
+    }catch(myException &e){
+        cerr<<e.what()<<endl;
+        //return;
+    }
 
     // Open test records file
     string testRecordsFilename;
