@@ -11,10 +11,11 @@
 
 using namespace std;
 
-class binaryFile {
+class binaryFile{
     
     public:
         binaryFile(void);
+        ~binaryFile(void);
         void readData(string);
         bool findEmployee(int, int);
         s_EMPLOYEE getEmployeeDetails(int, int);
@@ -24,11 +25,11 @@ class binaryFile {
         static string charArrayToString(char[]);
 
     private:
-        string binaryFileName;
-        int numEmployees;
-        list* departments;
-        s_EMPLOYEE *dataArray; // created with binary file data
-        int* indexArray;
+        string binaryFileName; 
+        int numEmployees; // track total employee count
+        list* departments; // array of lists for temporary storage before writing binary 
+        s_EMPLOYEE *dataArray; // used for testing binary > array functionality
+        int* indexArray; // track start of each department in binary file
 
         void p_ReadData(fstream&);
         void p_PrintArray(s_EMPLOYEE*);
@@ -39,7 +40,6 @@ class binaryFile {
         s_EMPLOYEE p_GetEmployeeDetails(e_DEPT, int);
         bool p_UpdateEmployeeName(s_EMPLOYEE);
 
-        
 };
 
 #endif

@@ -4,31 +4,26 @@
 
 
 /**************************** PUBLIC: Constructor ****************************/
-binaryFile::binaryFile( ){
+binaryFile::binaryFile(){
     binaryFileName = "";
     numEmployees = 0;
     departments = new list[NUM_DEPARTMENTS];
 }
 
-/*******************************************************************/
-
-/**************************** PUBLIC: readData ****************************/
-string binaryFile::charArrayToString(char employeeName[]){
-
-    string name = "";
-
-    if( &employeeName != nullptr ){
-
-        int nameLength = 0;
-        nameLength = strlen(employeeName);
-
-        int i = 0;
-        for( i = 0; i < nameLength; i++ ){
-            name += employeeName[i];
+/**************************** PUBLIC: Destructor ****************************/
+binaryFile::~binaryFile(){
+    int i = 0;
+    for( i = 0; i < NUM_DEPARTMENTS; i++ ){
+        if( &departments[i] != nullptr ){
+            list *currDept = &departments[i];
+            currDept->deleteList();
         }
     }
-    return name;
 }
+
+/*****************************************************************************************/
+/*                                   PUBLIC FUNCTIONS                                    */
+/*****************************************************************************************/
 
 /**************************** PUBLIC: readData ****************************/
 void binaryFile::readData(string inputFileName){
@@ -129,7 +124,9 @@ bool binaryFile::updateEmployeeName(s_EMPLOYEE employeeToUpdate){
     return retValue;
 }
 
-/*******************************************************************/
+/*****************************************************************************************/
+/*                                  PRIVATE FUNCTIONS                                    */
+/*****************************************************************************************/
 
 /**************************** PRIVATE: p_ReadData ****************************/
 void binaryFile::p_ReadData(fstream &inputFile){
@@ -203,7 +200,7 @@ void binaryFile::p_WriteBinary(){
             // record current position in the file as the index for the current department
             indexArray[i] = outputFile.tellp();
 
-            if (&departments[i] != nullptr ){
+            if( &departments[i] != nullptr ){
                 try{
                     list *currDept = &departments[i];
                     s_NODE *currNode;
@@ -363,6 +360,28 @@ bool binaryFile::p_UpdateEmployeeName(s_EMPLOYEE employee){
     }    
 
     return retValue;
+}
+
+/*****************************************************************************************/
+/*                                   STATIC FUNCTIONS                                    */
+/*****************************************************************************************/
+
+/**************************** PUBLIC: charArrayToString ****************************/
+string binaryFile::charArrayToString(char employeeName[]){
+
+    string name = "";
+
+    if( &employeeName != nullptr ){
+
+        int nameLength = 0;
+        nameLength = strlen(employeeName);
+
+        int i = 0;
+        for( i = 0; i < nameLength; i++ ){
+            name += employeeName[i];
+        }
+    }
+    return name;
 }
 
 /**************************** PUBLIC: getDepartmentString ****************************/
