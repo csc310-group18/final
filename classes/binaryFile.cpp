@@ -54,13 +54,13 @@ void binaryFile::readData(string inputFileName){
                 // Print dataArray
                 // p_PrintArray(dataArray);
 
-            }catch(myException &exc){
+            } catch(myException &exc){
                 throw(exc.what(), exc.retrieveCode());
             }
         } else {
             throw myException("Cannot open input file. File does not exist.", SYSTEM_FAILURE);
         }
-    }catch(myException &e){
+    } catch(myException &e){
         cout<<e.what()<<endl;
     }
 }
@@ -74,7 +74,7 @@ bool binaryFile::findEmployee(int department, int number){
     try{
 
         retOffset = p_FindEmployee(e_DEPT(department), number);
-    }catch(myException &exc){
+    } catch(myException &exc){
 
         throw myException(exc.what(), exc.retrieveCode());
     }
@@ -98,7 +98,7 @@ s_EMPLOYEE binaryFile::getEmployeeDetails(int department, int number){
     try{
         retEmployee = p_GetEmployeeDetails(e_DEPT(department), number);
         
-    }catch(myException &exc){
+    } catch(myException &exc){
 
         throw myException(exc.what(), exc.retrieveCode());
     }
@@ -116,7 +116,7 @@ bool binaryFile::updateEmployeeName(s_EMPLOYEE employeeToUpdate){
         employeeToUpdate = p_GetEmployeeDetails(employeeToUpdate.department, employeeToUpdate.number);
         retValue = p_UpdateEmployeeName(employeeToUpdate);
 
-    }catch(myException &exc){
+    } catch(myException &exc){
         
         throw myException(exc.what());
     }
@@ -160,12 +160,11 @@ void binaryFile::p_ReadData(fstream &inputFile){
                 
                 try{
                     departments[employeeDept].appendEmployee(newEmployee);
-                }catch(myException &e){
+                } catch(myException &e){
                     cout<< e.what() <<endl;
                 }
             }
-        }
-        catch(myException &e){
+        } catch(myException &e){
             cout<<e.what()<<endl;
         }
     }
@@ -226,8 +225,7 @@ void binaryFile::p_WriteBinary(){
         }
 
         outputFile.close();
-    }
-    else {
+    } else {
         throw myException("Cannot open ouput file.", ERROR);
     }
 }
@@ -294,19 +292,24 @@ int binaryFile::p_FindEmployee(e_DEPT department, int number){
     
 
     if( dataFile.is_open() ){
-        // Use index to move to the appropriate spot
+        // Use index to move to the appropriate spot for the department
         dataFile.seekg(indexArray[(int)department]);
-       
-        dataFile.read((char*)&tempEmployee, sizeof(s_EMPLOYEE));
+        
+        // Record the current position in the file and read the first employee
         tempOffset = dataFile.tellp();
-
+        dataFile.read((char*)&tempEmployee, sizeof(s_EMPLOYEE));
+        
+        // Check each employee in the department until the employee number found
+        // or the current employee number is greater than the employee number
         while( !dataFile.eof() && tempEmployee.department == department 
                 && tempEmployee.number <= number &&  retOffset == -1 ){
-
+            
+            // If employee is found, record the current offset as the offset to return
             if( tempEmployee.number == number ){
                 retOffset = tempOffset;
             }
 
+            // Record the current position in the file and read employee structure
             tempOffset = dataFile.tellp();
             dataFile.read((char*)&tempEmployee, sizeof(s_EMPLOYEE));
         }
@@ -325,14 +328,16 @@ s_EMPLOYEE binaryFile::p_GetEmployeeDetails(e_DEPT department, int number){
     s_EMPLOYEE retEmployee;
     int offset;
     
+    // Retrieve the offset in the file for the employee 
     offset = p_FindEmployee(department, number);
 
-    if( offset ==  -1 ){
-        throw myException("Cannot get employee details. Employee does not exist.", WARNING);
-    } else {
+    // Move to the appropriate position in file using offest and read in employee 
+    if( offset >=  0 ){
         dataFile.open(binaryFileName, ios::in|ios::binary);
         dataFile.seekg(offset, ios::beg);
-        dataFile.read((char*)&retEmployee, sizeof(s_EMPLOYEE));
+        dataFile.read((char*)&retEmployee, sizeof(s_EMPLOYEE));  
+    } else {
+        throw myException("Cannot get employee details. Employee does not exist.", WARNING);
     }
 
     return retEmployee;
@@ -343,16 +348,18 @@ bool binaryFile::p_UpdateEmployeeName(s_EMPLOYEE employee){
 
     fstream dataFile;
     bool retValue = false;
-    int tempOffset; 
+    int offset; 
 
-    tempOffset = p_FindEmployee(employee.department, employee.number);
+    // Retrieve the offset in the file for the employee 
+    offset = p_FindEmployee(employee.department, employee.number);
 
-    if( tempOffset != -1 ){
+    // Move to the appropriate position in file using offest and write in employee with updated name
+    if( offset != -1 ){
         
         dataFile.open(binaryFileName, ios::in|ios::out|ios::binary);
 
         if( dataFile.is_open() ){
-            dataFile.seekp(tempOffset, ios::beg);
+            dataFile.seekp(offset, ios::beg);
             dataFile.write((char*)&employee, sizeof(s_EMPLOYEE));
             retValue = true;
         }
