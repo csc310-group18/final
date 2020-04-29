@@ -5,31 +5,40 @@
 
 using namespace std;
 
+void printEmployeeDetails(s_EMPLOYEE employee);
+
 int main(int argc, char *argv[]){
 
-    binaryFile records;
-    string mainDataFilename = "smallOutput.txt";
-    //string mainDataFilename = "mediumOutput.txt";
-    //string mainDataFilename = "largeOutput.txt";
-    //string mainDataFilename = "largeOutput_unsorted.txt";
-    string testRecordsFilename;
-    testRecordsFilename = mainDataFilename.substr(0, mainDataFilename.find(".")) + "_TestRecords.txt";
+    string mainDataFilename = "";
 
-    fstream testRecordsFile;
+    // Get file name for employee data
+    if (argc == 2) {
+        mainDataFilename = argv[1]; // from command line arg if present
+    } 
+    else {
+        mainDataFilename = "smallOutput.txt"; 
+        //mainDataFilename = "mediumOutput.txt";
+        //mainDataFilename = "largeOutput.txt";
+        //mainDataFilename = "largeOutput_unsorted.txt";
+    }
 
     // Read data from txt file
-    records.readData(mainDataFilename);  // contains all employee records
+    binaryFile records;
+    records.readData(mainDataFilename);  // all employee records
 
     // Open test records file
+    string testRecordsFilename;
+    testRecordsFilename = mainDataFilename.substr(0, mainDataFilename.find(".")) + "_TestRecords.txt";
+    fstream testRecordsFile;
     testRecordsFile.open(testRecordsFilename, ios::in);
     
     // Exit if test records file failed to open
-    if (testRecordsFile.is_open() == false){
+    if( testRecordsFile.is_open() == false ){
         string msg = "Could not open <" + testRecordsFilename + "> for reading";
         myException e = myException(msg, SYSTEM_FAILURE);
-        cerr << e.what() << endl;
+        cerr << e.what() <<endl;
         exit(1);
-    } 
+    }
 
     // Get number of employees from test Data
     int numEmployees = 0;
@@ -37,110 +46,80 @@ int main(int argc, char *argv[]){
 
     // Output results from each test record
     int i = 0;
-    int deptBuffer = 0, employeeNumBuffer = 0;
-    string employeeName;
+    int employeeDept = 0, employeeNum = 0;
+    string employeeName = "";
+    s_EMPLOYEE employee;
+    s_EMPLOYEE updatedEmployee;
 
-    for (i = 0; i < numEmployees; i++){
-        testRecordsFile >> deptBuffer;
-        testRecordsFile >> employeeNumBuffer;
+    for( i = 0; i < numEmployees; i++ ){
+        testRecordsFile >> employeeDept;
+        testRecordsFile >> employeeNum;
 
+        // Search for employee record
         bool employeeFound = false;
-        employeeFound = records.findEmployee(deptBuffer, employeeNumBuffer);
-        if (employeeFound) {
-            cout << "Employee found" << endl;
-        } else {
-            cout << "Employee not found" << endl;
-        }
-
-        if(employeeFound == true){
-        employeeName = records.getEmployeeDetails(deptBuffer, employeeNumBuffer);
-        if (&employeeName != nullptr){
-            cout << "*******EMPLOYEE DETAILS*******" << endl;
-            cout << "\t    Department: " << records.getDepartment(deptBuffer) << endl;
-            cout << "\t    Employee Number: " << employeeNumBuffer << endl;
-            cout << "\t    Employee Name: " << employeeName << endl << endl;
-        }
-        
-
-
-        bool employeeUpdated;
-        employeeUpdated = records.updateEmployeeName(deptBuffer, employeeNumBuffer);
-        //TODO: modify updateEmployeeName to take (int int)
-        if (employeeUpdated) {
-            cout << "Employee updated" << endl;
-        } else {
-            cout << "Employee not updated" << endl;
-        }
-        }
-    }
-
-
-
-
-
-
-    // Get data file name
-
-    /*
-    if (argc == 2) {
-        mainDataFile = argv[1];
-    } 
-    else {
-        mainDataFile = "smallOutput.txt";
-        
-        //filename = "mediumOutput.txt";
-        //filename = "largeOutput.txt";
-        //filename = "largeOutput_unsorted.txt";
-    }
-
-    */
-
-
+        employeeFound = records.findEmployee(employeeDept, employeeNum);
     
-    // Create employees array with test data
+        if( employeeFound ){
 
-    // smallOutput
-    /*
-    s_EMPLOYEE employees[] = {{ ACCOUNTING     , 45731, "Leona"   }, { BUSINESS       , 37503, "Briar"   }, 
-                            { HUMAN_RESOURCES, 58509, "Kailey"  }, { SALES          , 58510, "Liv"     },
-                            { PRODUCTION     , 44258, "Anthony" }, { ACCOUNTING     , 18738, "Hunter"  },
-                            { BUSINESS       , 63006, "Annabel" }, { HUMAN_RESOURCES, 757  , "Layton"  }, 
-                            { SALES          , 68263, "Maxim"   }, { PRODUCTION     , 65898, "Rex"     }};
-    
-    */
-    // mediumOutput
-    /*
-    s_EMPLOYEE employees[] = {{ ACCOUNTING     , 243013, "Amina"   }, { BUSINESS       , 135016, "Dax"    },
-                            { HUMAN_RESOURCES, 15013 , "Kaleb"   }, { SALES          , 105013, "Violeta" },
-                            { PRODUCTION     , 297008, "Huxley"  }, { ACCOUNTING     , 139708, "Benicio" },
-                            { BUSINESS       , 250506, "Amari"   }, { HUMAN_RESOURCES, 206998, "Cory"    },
-                            { SALES          , 6011  , "Zariyah" }, { PRODUCTION     , 243119, "Mariana" }};
+            cout<< "Employee found" <<endl;
+            
+            // Store employee details in local struct
+            employee = records.getEmployeeDetails(employeeDept, employeeNum);
 
-    */
+            // Print employee details
+            if ( &employee.name != nullptr ){
+                printEmployeeDetails(employee);
+            }
+            
+            // Change characters of employee name in local struct
+            bool employeeUpdated = false;
+            try{
+                int x = 0;
+                for( x = 0; x < strlen(employee.name); x++ ){
+                    employee.name[x] = 'A';
+                }
+            }catch(exception &e){
+                cerr<<e.what()<<endl;
+            }
 
-    // largeOutput
-    /*
-    s_EMPLOYEE employees[] = {{ ACCOUNTING     , 205009, "Isabelle" }, { BUSINESS       , 25013, "Amiya"    }, 
-                        { HUMAN_RESOURCES, 189715, "Donald"   }, { SALES          , 155012, "Virginia" }, 
-                        { PRODUCTION     , 430017, "Magnolia" }, { ACCOUNTING     , 205508, "Meadow"   }, 
-                        { BUSINESS       , 335014, "Crosby"   }, { HUMAN_RESOURCES, 430013, "Clara"    }, 
-                        { SALES          , 5014  , "Watson"   }, { PRODUCTION     , 433415, "Kyler"    }};
+            // Pass locally updated struct to class
+            employeeUpdated = records.updateEmployeeName(employee);
 
-    */
-/*
+            // Print results
+            if (employeeUpdated){
 
-    try {
-        records.readData(mainDataFile);     // Read data from txt file
-        records.outputData(employees, numEmployees); // Output test data
+                cout << "Employee updated"<<endl;
+
+                // Get updated employee from binary file
+                updatedEmployee = records.getEmployeeDetails(employeeDept, employeeNum);
+
+                // Print employee details again to make sure update worked
+                printEmployeeDetails(employee);
+
+            } else {
+                cout << "Employee not updated"<<endl;
+            }
+            
+        } else {
+            cout << "Employee not found"<<endl;
+        }
+
+        cout<<"------------------------------"<<endl;
+
     }
-    catch (myException &exc) {
-        cout<<exc.what()<<endl;
-    }
-
-*/
-   
-
-
 
     return 0;
 }
+
+void printEmployeeDetails(s_EMPLOYEE employee){
+    // Print employee details
+    if ( &employee.name != nullptr ){
+        cout<<"*******EMPLOYEE DETAILS*******"<<endl;
+        cout<<"\tDepartment: "<<binaryFile::getDepartmentString(employee.department)<<endl;
+        cout<<"\tEmployee Number: "<<employee.number<<endl;
+        cout<<"\tEmployee Name: "<<binaryFile::charArrayToString(employee.name)<<endl;
+    } else {
+        cout<<"Employee structure invalid"<<endl;
+    }
+}
+

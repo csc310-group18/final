@@ -17,25 +17,18 @@ class binaryFile {
         binaryFile(void);
         void readData(string);
         bool findEmployee(int, int);
-        string getEmployeeDetails(int, int);
-        bool updateEmployeeName(int, int);
-        
-        string getDepartment(int);
+        s_EMPLOYEE getEmployeeDetails(int, int);
+        bool updateEmployeeName(s_EMPLOYEE);
 
-        /*
-        void outputData(s_EMPLOYEE[], int);
-        void findEmployeeOutput(e_DEPT, int);
-        string departmentString(Department);
-        void getEmployeeDetailsOutput(e_DEPT, int);
-        void updateEmployeeNameOutput(s_EMPLOYEE);
-        */
+        static string getDepartmentString(int);
+        static string charArrayToString(char[]);
 
     private:
         string binaryFileName;
         int numEmployees;
-        list *departments;
+        list* departments;
         s_EMPLOYEE *dataArray; // created with binary file data
-        int * indexArray;
+        int* indexArray;
 
         void p_ReadData(fstream&);
         void p_PrintArray(s_EMPLOYEE*);
