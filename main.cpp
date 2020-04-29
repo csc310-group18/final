@@ -28,7 +28,6 @@ int main(int argc, char *argv[]){
         records.readData(mainDataFilename);  // all employee records
     }catch(myException &e){
         cerr<<e.what()<<endl;
-        //return;
     }
 
     // Open test records file
@@ -66,13 +65,13 @@ int main(int argc, char *argv[]){
     
         if( employeeFound ){
 
-            cout<< "Employee found" <<endl;
+            cout<<"Employee found"<<endl;
             
             // Store employee details in local struct
             employee = records.getEmployeeDetails(employeeDept, employeeNum);
 
             // Print employee details
-            if ( &employee.name != nullptr ){
+            if( &employee.name != nullptr ){
                 printEmployeeDetails(employee);
             }
             
@@ -91,9 +90,9 @@ int main(int argc, char *argv[]){
             employeeUpdated = records.updateEmployeeName(employee);
 
             // Print results
-            if (employeeUpdated){
+            if( employeeUpdated ){
 
-                cout << "Employee updated"<<endl;
+                cout<<"Employee updated"<<endl;
 
                 // Get updated employee from binary file
                 updatedEmployee = records.getEmployeeDetails(employeeDept, employeeNum);
@@ -102,11 +101,11 @@ int main(int argc, char *argv[]){
                 printEmployeeDetails(employee);
 
             } else {
-                cout << "Employee not updated"<<endl;
+                cout<<"Employee not updated"<<endl;
             }
             
         } else {
-            cout << "Employee not found"<<endl;
+            cout<<"Employee not found"<<endl;
         }
 
         cout<<"------------------------------"<<endl;
