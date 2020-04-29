@@ -9,6 +9,9 @@ int main(int argc, char *argv[]){
 
     binaryFile records;
     string mainDataFilename = "smallOutput.txt";
+    //string mainDataFilename = "mediumOutput.txt";
+    //string mainDataFilename = "largeOutput.txt";
+    //string mainDataFilename = "largeOutput_unsorted.txt";
     string testRecordsFilename;
     testRecordsFilename = mainDataFilename.substr(0, mainDataFilename.find(".")) + "_TestRecords.txt";
 
@@ -35,12 +38,13 @@ int main(int argc, char *argv[]){
     // Output results from each test record
     int i = 0;
     int deptBuffer = 0, employeeNumBuffer = 0;
+    string employeeName;
 
     for (i = 0; i < numEmployees; i++){
         testRecordsFile >> deptBuffer;
         testRecordsFile >> employeeNumBuffer;
 
-        bool employeeFound;
+        bool employeeFound = false;
         employeeFound = records.findEmployee(deptBuffer, employeeNumBuffer);
         if (employeeFound) {
             cout << "Employee found" << endl;
@@ -48,25 +52,26 @@ int main(int argc, char *argv[]){
             cout << "Employee not found" << endl;
         }
 
-        string employeeName = "";
+        if(employeeFound == true){
         employeeName = records.getEmployeeDetails(deptBuffer, employeeNumBuffer);
-        if (employeeName != ""){
+        if (&employeeName != nullptr){
             cout << "*******EMPLOYEE DETAILS*******" << endl;
             cout << "\t    Department: " << records.getDepartment(deptBuffer) << endl;
             cout << "\t    Employee Number: " << employeeNumBuffer << endl;
             cout << "\t    Employee Name: " << employeeName << endl << endl;
         }
+        
 
 
         bool employeeUpdated;
-        //employeeUpdated = records.updateEmployeeName(deptBuffer, employeeNumBuffer);
+        employeeUpdated = records.updateEmployeeName(deptBuffer, employeeNumBuffer);
         //TODO: modify updateEmployeeName to take (int int)
         if (employeeUpdated) {
             cout << "Employee updated" << endl;
         } else {
             cout << "Employee not updated" << endl;
         }
-
+        }
     }
 
 

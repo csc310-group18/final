@@ -20,6 +20,7 @@ void binaryFile::readData(string inputFileName) {
 
     inputFile.open(inputFileName, ios::in);
     
+    try{
     // Create binary file with input txt file data
     if (inputFile.is_open()) {
         try {
@@ -47,9 +48,13 @@ void binaryFile::readData(string inputFileName) {
     }
     else {
 
-        throw myException("Cannot open input file. File does not exist.", ERROR);
+        throw myException("Cannot open input file. File does not exist.", SYSTEM_FAILURE);
     }
-
+    }
+    catch(myException &e)
+    {
+        cout<<e.what()<<endl;
+    }
 
 
 
@@ -105,9 +110,11 @@ string binaryFile::getEmployeeDetails(int department, int number){
 }
 
 /**************************** PUBLIC: updateEmployeeName ****************************/
-bool binaryFile::updateEmployeeName(s_EMPLOYEE employee){
+bool binaryFile::updateEmployeeName(int department, int employeeNumber){
 
     bool retValue = false;
+    s_EMPLOYEE employee;
+    employee = p_GetEmployeeDetails(e_DEPT(department), employeeNumber);
 
     try{
         retValue = p_UpdateEmployeeName(employee);
@@ -138,25 +145,30 @@ void binaryFile::p_ReadData(fstream &inputFile){
         employeeDept = atoi(inputLine.substr(0, commaArray[0]).c_str());
         employeeNum = atoi(inputLine.substr(commaArray[0]+1, commaArray[1]-1).c_str());
         employeeName = inputLine.substr(commaArray[1]+1, inputLine.length());
+        try{
+            if (employeeName.length() > MAX_NAME_LENGTH) {
+                throw myException( "Employee name exceeds 30 characters", ERROR);
+            } else if (employeeDept < 0 || employeeDept >= NUM_DEPARTMENTS) {
+                throw myException( "Department number is invalid", ERROR);
+            } else {
+                numEmployees++;
 
-        if (employeeName.length() > MAX_NAME_LENGTH) {
-            throw myException( "Employee name exceeds 30 characters", ERROR);
-        } else if (employeeDept < 0 || employeeDept >= NUM_DEPARTMENTS) {
-            throw myException( "Department number is invalid", ERROR);
-        } else {
-            numEmployees++;
-
-            newEmployee.department = e_DEPT(employeeDept);
-            newEmployee.number = employeeNum;
-            employeeName.copy(newEmployee.name, employeeName.size());
-            newEmployee.name[employeeName.size()] = '\0';
-            
-            try {
-                departments[employeeDept].appendEmployee(newEmployee);
+                newEmployee.department = e_DEPT(employeeDept);
+                newEmployee.number = employeeNum;
+                employeeName.copy(newEmployee.name, employeeName.size());
+                newEmployee.name[employeeName.size()] = '\0';
+                
+                try {
+                    departments[employeeDept].appendEmployee(newEmployee);
+                }
+                catch (myException &e){
+                    cout << e.what() << endl;
+                }
             }
-            catch (myException &e){
-                cout << e.what() << endl;
-            }
+        }
+        catch(myException &e)
+        {
+            cout<<e.what()<<endl;
         }
     }
 }

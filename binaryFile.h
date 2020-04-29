@@ -18,7 +18,7 @@ class binaryFile {
         void readData(string);
         bool findEmployee(int, int);
         string getEmployeeDetails(int, int);
-        bool updateEmployeeName(s_EMPLOYEE);
+        bool updateEmployeeName(int, int);
         
         string getDepartment(int);
 
