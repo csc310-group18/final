@@ -97,8 +97,8 @@ int main(int argc, char *argv[]){
                 // Get updated employee from binary file
                 updatedEmployee = records.getEmployeeDetails(employeeDept, employeeNum);
 
-                // Print employee details again to make sure update worked
-                printEmployeeDetails(employee);
+                // Uncomment to print employee details again to make sure update worked
+                // printEmployeeDetails(employee);
 
             } else {
                 cout<<"Employee not updated"<<endl;
