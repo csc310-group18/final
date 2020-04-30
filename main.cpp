@@ -6,7 +6,6 @@
 using namespace std;
 
 void printEmployeeDetails(s_EMPLOYEE employee);
-bool updateLocalStructName(s_EMPLOYEE &employee, string newName);
 
 int main(int argc, char *argv[]){
 
