@@ -48,11 +48,10 @@ void binaryFile::readData(string inputFileName){
                 p_WriteBinary(); 
 
                 // Uncomment to test binary > array functionality
-                // Read records from binary file into dataArray
-                // p_ReadBinary(); 
-
-                // Print dataArray
-                // p_PrintArray(dataArray);
+                /*
+                p_ReadBinary();
+                p_PrintArray(dataArray);
+                */
 
             } catch(myException &exc){
                 throw(exc.what(), exc.retrieveCode());
@@ -245,7 +244,7 @@ void binaryFile::p_ReadBinary(){
 
             dataFile.read((char*)dataArray, sizeof(s_EMPLOYEE) * numEmployees);
             dataFile.close();
-        }catch(myException &exc){
+        } catch(myException &exc){
 
             throw (exc.what(), exc.retrieveCode());
         }
@@ -395,7 +394,7 @@ string binaryFile::getDepartmentString(int deptNum){
     
     string departmentString[] = {"ACCOUNTING", "BUSINESS", "HUMAN RESOURCES", "SALES", "PRODUCTION"};
     
-    if (deptNum >= 0 && deptNum < NUM_DEPARTMENTS ){
+    if(deptNum >= 0 && deptNum < NUM_DEPARTMENTS ){
         return departmentString[deptNum];
     } else {
         throw myException("Department number out of range", ERROR);
@@ -425,12 +424,12 @@ bool binaryFile::stringToCharArray(s_EMPLOYEE &employee, string newName){
             employee.name[x] = '\0';
         }
 
-        // Add new name to 
+        // Add string to char array in employee struct
         for( x = 0; x < newName.length(); x++ ){
             employee.name[x] = newName[x];
         }
 
-    }catch(exception &e){
+    } catch(exception &e){
         throw myException(e.what(), ERROR);
         return false;
     }

@@ -14,8 +14,7 @@ int main(int argc, char *argv[]){
     // Get file name for employee data
     if (argc == 2) {
         mainDataFilename = argv[1]; // from command line arg if present
-    } 
-    else {
+    } else {
         mainDataFilename = "data/smallOutput.txt"; 
         //mainDataFilename = "data/mediumOutput.txt";
         //mainDataFilename = "data/largeOutput.txt";
@@ -26,7 +25,7 @@ int main(int argc, char *argv[]){
     binaryFile records;
     try{
         records.readData(mainDataFilename);  // all employee records
-    }catch(myException &e){
+    } catch(myException &e){
         cerr<<e.what()<<endl;
         if( e.retrieveCode() >= 2 ){
             exit(1);
@@ -47,7 +46,7 @@ int main(int argc, char *argv[]){
         exit(1);
     }
 
-    // Get number of employees from test Data
+    // Get number of employees from test data
     int numEmployees = 0;
     testRecordsFile >> numEmployees;
 
@@ -84,14 +83,14 @@ int main(int argc, char *argv[]){
             // Update employee name
             try{
                 // Change employee name in local struct
-                localNameChanged = binaryFile::stringToCharArray(employee, "Hello World");
+                localNameChanged = binaryFile::stringToCharArray(employee, "Hiworld");
 
                 // Update the binary file
                 if( localNameChanged == true ){
                     employeeUpdated = records.updateEmployeeName(employee);
                 }
 
-            }catch(myException &e){
+            } catch(myException &e){
                 cerr<<e.what()<<endl;
             }
 
@@ -123,7 +122,7 @@ int main(int argc, char *argv[]){
 
 void printEmployeeDetails(s_EMPLOYEE employee){
     // Print employee details
-    if ( &employee.name != nullptr ){
+    if( &employee.name != nullptr ){
         cout<<"*******EMPLOYEE DETAILS*******"<<endl;
         cout<<"\tDepartment: "<<binaryFile::getDepartmentString(employee.department)<<endl;
         cout<<"\tEmployee Number: "<<employee.number<<endl;
