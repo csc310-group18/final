@@ -414,6 +414,7 @@ int binaryFile::getMaxNameLength(){
     return MAX_NAME_LENGTH;
 }
 
+/**************************** STATIC: stringToCharArray ****************************/
 bool binaryFile::stringToCharArray(s_EMPLOYEE &employee, string newName){
 
     int maxLength = 0;
