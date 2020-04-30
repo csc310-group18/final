@@ -105,6 +105,11 @@ s_EMPLOYEE binaryFile::getEmployeeDetails(int department, int number){
     return retEmployee;
 }
 
+/**************************** PUBLIC: getTotalEmployees ****************************/
+int binaryFile::getTotalEmployees(){
+    
+    return this->numEmployees;
+}
 
 /**************************** PUBLIC: updateEmployeeName ****************************/
 bool binaryFile::updateEmployeeName(s_EMPLOYEE employeeToUpdate){
@@ -145,9 +150,11 @@ void binaryFile::p_ReadData(fstream &inputFile){
 
         try{
             if( employeeName.length() > MAX_NAME_LENGTH ){
-                throw myException( "Employee name exceeds 30 characters", ERROR);
+                string msg = "Failed to add employee " + to_string(employeeNum) + " (name exceeds 30 characters)";
+                throw myException(msg, ERROR);
             } else if ( employeeDept < 0 || employeeDept >= NUM_DEPARTMENTS ){
-                throw myException( "Department number is invalid", ERROR);
+                string msg = "Failed to add employee " + to_string(employeeNum) + " (department number is invalid)";
+                throw myException(msg, ERROR);
             } else {
                 numEmployees++; // keep track of total employee count
 

@@ -20,6 +20,7 @@ class binaryFile{
         bool findEmployee(int, int);
         s_EMPLOYEE getEmployeeDetails(int, int);
         bool updateEmployeeName(s_EMPLOYEE);
+        int getTotalEmployees(void);
 
         static int getMaxNameLength(void);
         static string getDepartmentString(int);

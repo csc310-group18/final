@@ -24,7 +24,8 @@ int main(int argc, char *argv[]){
     // Read data from txt file
     binaryFile records;
     try{
-        records.readData(mainDataFilename);  // all employee records
+        records.readData(mainDataFilename);  // instance of binaryFile class
+        //cout<<"Total records: "<<records.getTotalEmployees()<<endl; // confirm total records
     } catch(myException &e){
         cerr<<e.what()<<endl;
         if( e.retrieveCode() >= 2 ){
