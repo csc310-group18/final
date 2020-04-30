@@ -28,17 +28,20 @@ int main(int argc, char *argv[]){
         records.readData(mainDataFilename);  // all employee records
     }catch(myException &e){
         cerr<<e.what()<<endl;
+        if( e.retrieveCode() >= 2 ){
+            exit(1);
+        }
     }
 
     // Open test records file
     string testRecordsFilename;
-    testRecordsFilename = mainDataFilename.substr(0, mainDataFilename.find(".")) + "_TestRecords.txt";
+    testRecordsFilename = mainDataFilename.substr(0, mainDataFilename.find("."))+"_TestRecords.txt";
     fstream testRecordsFile;
     testRecordsFile.open(testRecordsFilename, ios::in);
     
     // Exit if test records file failed to open
     if( testRecordsFile.is_open() == false ){
-        string msg = "Could not open <" + testRecordsFilename + "> for reading";
+        string msg = "Could not open <"+testRecordsFilename+"> for reading";
         myException e = myException(msg, SYSTEM_FAILURE);
         cerr << e.what() <<endl;
         exit(1);
