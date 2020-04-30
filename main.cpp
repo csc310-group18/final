@@ -6,6 +6,7 @@
 using namespace std;
 
 void printEmployeeDetails(s_EMPLOYEE employee);
+bool updateLocalStructName(s_EMPLOYEE &employee, string newName);
 
 int main(int argc, char *argv[]){
 
@@ -74,31 +75,34 @@ int main(int argc, char *argv[]){
             if( &employee.name != nullptr ){
                 printEmployeeDetails(employee);
             }
-            
-            // Change characters of employee name in local struct
+
             bool employeeUpdated = false;
+            bool localNameChanged = false;
+
+            // Update employee name
             try{
-                int x = 0;
-                for( x = 0; x < strlen(employee.name); x++ ){
-                    employee.name[x] = 'A';
+                // Change employee name in local struct
+                localNameChanged = binaryFile::stringToCharArray(employee, "Hello World");
+
+                // Update the binary file
+                if( localNameChanged == true ){
+                    employeeUpdated = records.updateEmployeeName(employee);
                 }
-            }catch(exception &e){
+
+            }catch(myException &e){
                 cerr<<e.what()<<endl;
             }
-
-            // Pass locally updated struct to class
-            employeeUpdated = records.updateEmployeeName(employee);
 
             // Print results
             if( employeeUpdated ){
 
                 cout<<"Employee updated"<<endl;
 
-                // Get updated employee from binary file
+                // Uncomment to confirm update to binary file
+                /*
                 updatedEmployee = records.getEmployeeDetails(employeeDept, employeeNum);
-
-                // Uncomment to print employee details again to make sure update worked
-                // printEmployeeDetails(employee);
+                printEmployeeDetails(updatedEmployee);
+                */
 
             } else {
                 cout<<"Employee not updated"<<endl;
@@ -126,4 +130,3 @@ void printEmployeeDetails(s_EMPLOYEE employee){
         cout<<"Employee structure invalid"<<endl;
     }
 }
-

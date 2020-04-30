@@ -113,7 +113,6 @@ bool binaryFile::updateEmployeeName(s_EMPLOYEE employeeToUpdate){
     bool retValue = false;
     
     try{
-        employeeToUpdate = p_GetEmployeeDetails(employeeToUpdate.department, employeeToUpdate.number);
         retValue = p_UpdateEmployeeName(employeeToUpdate);
 
     } catch(myException &exc){
@@ -349,7 +348,7 @@ bool binaryFile::p_UpdateEmployeeName(s_EMPLOYEE employee){
     fstream dataFile;
     bool retValue = false;
     int offset; 
-
+    
     // Retrieve the offset in the file for the employee 
     offset = p_FindEmployee(employee.department, employee.number);
 
@@ -373,7 +372,7 @@ bool binaryFile::p_UpdateEmployeeName(s_EMPLOYEE employee){
 /*                                   STATIC FUNCTIONS                                    */
 /*****************************************************************************************/
 
-/**************************** PUBLIC: charArrayToString ****************************/
+/**************************** STATIC: charArrayToString ****************************/
 string binaryFile::charArrayToString(char employeeName[]){
 
     string name = "";
@@ -391,7 +390,7 @@ string binaryFile::charArrayToString(char employeeName[]){
     return name;
 }
 
-/**************************** PUBLIC: getDepartmentString ****************************/
+/**************************** STATIC: getDepartmentString ****************************/
 string binaryFile::getDepartmentString(int deptNum){
     
     string departmentString[] = {"ACCOUNTING", "BUSINESS", "HUMAN RESOURCES", "SALES", "PRODUCTION"};
@@ -401,6 +400,40 @@ string binaryFile::getDepartmentString(int deptNum){
     } else {
         throw myException("Department number out of range", ERROR);
     }
-
 }
 
+/**************************** STATIC: getMaxNameLenght ****************************/
+int binaryFile::getMaxNameLength(){
+
+    return MAX_NAME_LENGTH;
+}
+
+bool binaryFile::stringToCharArray(s_EMPLOYEE &employee, string newName){
+
+    int maxLength = 0;
+    maxLength = binaryFile::getMaxNameLength();
+    
+    if( newName.length() > maxLength ){
+        throw myException("New name must be 30 characters or less.", ERROR);
+    }
+
+    try{
+        int x = 0;
+
+        // Zero out the current name
+        for( x = 0; x < maxLength; x++ ){
+            employee.name[x] = '\0';
+        }
+
+        // Add new name to 
+        for( x = 0; x < newName.length(); x++ ){
+            employee.name[x] = newName[x];
+        }
+
+    }catch(exception &e){
+        throw myException(e.what(), ERROR);
+        return false;
+    }
+
+    return true;
+}

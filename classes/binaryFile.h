@@ -21,8 +21,10 @@ class binaryFile{
         s_EMPLOYEE getEmployeeDetails(int, int);
         bool updateEmployeeName(s_EMPLOYEE);
 
+        static int getMaxNameLength(void);
         static string getDepartmentString(int);
         static string charArrayToString(char[]);
+        static bool stringToCharArray(s_EMPLOYEE &employee, string);
 
     private:
         string binaryFileName; 
