@@ -165,14 +165,19 @@ void binaryFile::p_ReadData(fstream &inputFile){
             employeeName = inputLine.substr(commaArray[1]+1, inputLine.length());
 
             try{
-                if( employeeName.length() > MAX_NAME_LENGTH ){
+                if( employeeDept < 0 || employeeDept >= NUM_DEPARTMENTS ){
+
+                    string msg = "Failed to add employee " + to_string(employeeNum) + " (department number is invalid)";
+                    throw myException(msg, ERROR);
+                    
+                } else if( employeeName.length() > MAX_NAME_LENGTH ){
 
                     string msg = "Failed to add employee " + to_string(employeeNum) + " (name exceeds 30 characters)";
                     throw myException(msg, ERROR);
 
-                } else if( employeeDept < 0 || employeeDept >= NUM_DEPARTMENTS ){
+                } else if( employeeNum < 0 ){
 
-                    string msg = "Failed to add employee " + to_string(employeeNum) + " (department number is invalid)";
+                    string msg = "Failed to add employee (employee number less than 0)";
                     throw myException(msg, ERROR);
 
                 } else {
@@ -194,10 +199,13 @@ void binaryFile::p_ReadData(fstream &inputFile){
                     
                 }
             } catch(myException &e){
-                cout<<e.what()<<endl;
+                if( e.retrieveCode() >= 3 ){
+                    throw e;
+                } else{
+                    cout<<e.what()<<endl;
+                }
             }
         }
-
 
     }
 }
