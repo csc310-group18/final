@@ -396,12 +396,18 @@ string binaryFile::charArrayToString(char employeeName[]){
     return name;
 }
 
+/**************************** STATIC: getTotalDepartments ****************************/
+int binaryFile::getTotalDepartments(){
+    
+    return NUM_DEPARTMENTS;
+}
+
 /**************************** STATIC: getDepartmentString ****************************/
 string binaryFile::getDepartmentString(int deptNum){
     
     string departmentString[] = {"ACCOUNTING", "BUSINESS", "HUMAN RESOURCES", "SALES", "PRODUCTION"};
     
-    if(deptNum >= 0 && deptNum < NUM_DEPARTMENTS ){
+    if( deptNum >= 0 && deptNum < binaryFile::getTotalDepartments() ){
         return departmentString[deptNum];
     } else {
         throw myException("Department number out of range", ERROR);

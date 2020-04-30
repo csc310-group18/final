@@ -124,10 +124,14 @@ int main(int argc, char *argv[]){
 void printEmployeeDetails(s_EMPLOYEE employee){
     // Print employee details
     if( &employee.name != nullptr ){
-        cout<<"*******EMPLOYEE DETAILS*******"<<endl;
-        cout<<"\tDepartment: "<<binaryFile::getDepartmentString(employee.department)<<endl;
-        cout<<"\tEmployee Number: "<<employee.number<<endl;
-        cout<<"\tEmployee Name: "<<binaryFile::charArrayToString(employee.name)<<endl;
+        try{
+            cout<<"*******EMPLOYEE DETAILS*******"<<endl;
+            cout<<"\tDepartment: "<<binaryFile::getDepartmentString(employee.department)<<endl;
+            cout<<"\tEmployee Number: "<<employee.number<<endl;
+            cout<<"\tEmployee Name: "<<binaryFile::charArrayToString(employee.name)<<endl;
+        } catch( myException &e ){
+            cerr<<e.what()<<endl;
+        }
     } else {
         cout<<"Employee structure invalid"<<endl;
     }

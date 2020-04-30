@@ -23,6 +23,7 @@ class binaryFile{
         int getTotalEmployees(void);
 
         static int getMaxNameLength(void);
+        static int getTotalDepartments(void);
         static string getDepartmentString(int);
         static string charArrayToString(char[]);
         static bool stringToCharArray(s_EMPLOYEE &employee, string);
