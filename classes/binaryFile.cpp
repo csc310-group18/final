@@ -33,35 +33,32 @@ void binaryFile::readData(string inputFileName){
 
     inputFile.open(inputFileName, ios::in);
     
-    try{
-        // Create binary file with input txt file data
-        if( inputFile.is_open() ){
-            try{
+    // Create binary file with input txt file data
+    if( inputFile.is_open() ){
+        try{
 
-                // Read records from txt file into department lists
-                p_ReadData(inputFile);
-                
-                // Sort each linked list
-                p_SortData();      
+            // Read records from txt file into department lists
+            p_ReadData(inputFile);
 
-                // Write each list to binary file
-                p_WriteBinary(); 
+            // Sort each linked list
+            p_SortData();      
 
-                // Uncomment to test binary > array functionality
-                /*
-                p_ReadBinary();
-                p_PrintArray(dataArray);
-                */
+            // Write each list to binary file
+            p_WriteBinary(); 
 
-            } catch(myException &exc){
-                throw(exc.what(), exc.retrieveCode());
-            }
-        } else {
-            throw myException("Cannot open input file. File does not exist.", SYSTEM_FAILURE);
+            // Uncomment to test binary > array functionality
+            /*
+            p_ReadBinary();
+            p_PrintArray(dataArray);
+            */
+
+        } catch(myException &exc){
+            throw exc;
         }
-    } catch(myException &e){
-        cout<<e.what()<<endl;
+    } else {
+        throw myException("Cannot open input file. File does not exist.", SYSTEM_FAILURE);
     }
+
 }
 
 /**************************** PUBLIC: findEmployee ****************************/
@@ -75,7 +72,7 @@ bool binaryFile::findEmployee(int department, int number){
         retOffset = p_FindEmployee(e_DEPT(department), number);
     } catch(myException &exc){
 
-        throw myException(exc.what(), exc.retrieveCode());
+        throw exc;
     }
 
     if( retOffset == -1 ){
@@ -99,7 +96,7 @@ s_EMPLOYEE binaryFile::getEmployeeDetails(int department, int number){
         
     } catch(myException &exc){
 
-        throw myException(exc.what(), exc.retrieveCode());
+        throw exc;
     }
 
     return retEmployee;
@@ -121,7 +118,7 @@ bool binaryFile::updateEmployeeName(s_EMPLOYEE employeeToUpdate){
 
     } catch(myException &exc){
         
-        throw myException(exc.what());
+        throw exc;
     }
     
     return retValue;
@@ -141,37 +138,67 @@ void binaryFile::p_ReadData(fstream &inputFile){
 
     // Read records into their department's linked list 
     while( getline(inputFile, inputLine) ){
+        commaArray[0] = -1;
+        commaArray[1] = -1;
         commaArray[0] = inputLine.find(",");
         commaArray[1] = inputLine.find(",", commaArray[0]+1);
 
-        employeeDept = atoi(inputLine.substr(0, commaArray[0]).c_str());
-        employeeNum = atoi(inputLine.substr(commaArray[0]+1, commaArray[1]-1).c_str());
-        employeeName = inputLine.substr(commaArray[1]+1, inputLine.length());
+        if( commaArray[0] == -1 || commaArray[1] == -1 ){
+            
+            string failure = "";
+            string commaErr = "Could not convert employee record from text to binary (line must have 2 commas).";
+            failure += commaErr;
 
-        try{
-            if( employeeName.length() > MAX_NAME_LENGTH ){
-                string msg = "Failed to add employee " + to_string(employeeNum) + " (name exceeds 30 characters)";
-                throw myException(msg, ERROR);
-            } else if ( employeeDept < 0 || employeeDept >= NUM_DEPARTMENTS ){
-                string msg = "Failed to add employee " + to_string(employeeNum) + " (department number is invalid)";
-                throw myException(msg, ERROR);
-            } else {
-                numEmployees++; // keep track of total employee count
-
-                newEmployee.department = e_DEPT(employeeDept);
-                newEmployee.number = employeeNum;
-                employeeName.copy(newEmployee.name, employeeName.size()); // copy input string to char array
-                newEmployee.name[employeeName.size()] = '\0'; // terminate char array
-                
-                try{
-                    departments[employeeDept].appendEmployee(newEmployee);
-                } catch(myException &e){
-                    cout<< e.what() <<endl;
-                }
+            if( newEmployee.number ){
+                string lastEmployeeMsg = "Last employee to convert: " + to_string(newEmployee.number);
+                failure += " " + lastEmployeeMsg;
             }
-        } catch(myException &e){
-            cout<<e.what()<<endl;
+            throw myException(failure, SYSTEM_FAILURE);
+
+        } else {
+            
+            employeeName = "";
+            employeeNum = -1, employeeDept = -1;
+
+            employeeDept = atoi(inputLine.substr(0, commaArray[0]).c_str());
+            employeeNum = atoi(inputLine.substr(commaArray[0]+1, commaArray[1]-1).c_str());
+            employeeName = inputLine.substr(commaArray[1]+1, inputLine.length());
+
+            try{
+                if( employeeName.length() > MAX_NAME_LENGTH ){
+
+                    string msg = "Failed to add employee " + to_string(employeeNum) + " (name exceeds 30 characters)";
+                    throw myException(msg, ERROR);
+
+                } else if( employeeDept < 0 || employeeDept >= NUM_DEPARTMENTS ){
+
+                    string msg = "Failed to add employee " + to_string(employeeNum) + " (department number is invalid)";
+                    throw myException(msg, ERROR);
+
+                } else {
+
+
+                    newEmployee.department = e_DEPT(employeeDept);
+                    newEmployee.number = employeeNum;
+                    employeeName.copy(newEmployee.name, employeeName.size()); // copy input string to char array
+                    newEmployee.name[employeeName.size()] = '\0'; // terminate char array
+                    
+                    departments[employeeDept].appendEmployee(newEmployee);
+
+                    numEmployees++; // keep track of total employee count
+
+                    if( employeeName.length() == 0 ){
+                        string msg = "Employee " + to_string(employeeNum) + " added with no name";
+                        throw myException(msg, WARNING);
+                    }
+                    
+                }
+            } catch(myException &e){
+                cout<<e.what()<<endl;
+            }
         }
+
+
     }
 }
 
@@ -224,7 +251,7 @@ void binaryFile::p_WriteBinary(){
 
                 }
                 catch(myException &exc ){
-                    throw (exc.what(), exc.retrieveCode());
+                    throw exc;
                 }
             }
         }
@@ -253,7 +280,7 @@ void binaryFile::p_ReadBinary(){
             dataFile.close();
         } catch(myException &exc){
 
-            throw (exc.what(), exc.retrieveCode());
+            throw exc;
         }
     } else {
         throw myException("Cannot open binary file.", ERROR);
