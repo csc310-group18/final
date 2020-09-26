@@ -1,18 +1,90 @@
-# Final Project
+# CSC 310 Final Project
 
-## Description
-You will create a class that follows the instructions specified below. When completed, you will submit a tar.gz file (tar -zcf) named “FinalProject.tar.gz” to your group’s Dropbox. It must include a Makefile and all source code and header files used to build your final binary.
+Our process:
+* Read employee records from txt file into separate linked lists for each department
+* Sort each linked list by employee ID
+* Write all records to binary file
+   * Ordred by department
+   * Ordered by employee ID within each department
+   * Index array created while writing binary for better search performance
+* Test functionality by reading employee records from test records file
+* Search for test records in binary file
+   * If found, print employee details and change employee name
 
-## Details
-The Dropbox contains 1 file called inputFiles.tar.gz. In this archive are 4 files: smallOutput.txt, mediumOutput.txt, and largeOutput.txt. Each file is comprised of records representing an employee of a fictitious company, and follows these rules:
+Beginning of **data/smallOutput.txt** employee records input txt file (*department number, employee number, employee name*):
+
+```
+1,0,Emma
+1,1,Olivia
+1,2,Ava
+2,3,Isabella
+4,4,Sophia
+1,5,Charlotte
+0,6,Mia
+2,7,Amelia
+...
+```
+
+Sample execution using **data/SmallOutput.txt** as input file and searching for employee records in **/data/smallOutput_TestRecords.txt**, which includes 5 valid records and 5 records not found in input file:
+
+```
+./excBinaryFile
+Employee found
+*******EMPLOYEE DETAILS*******
+	Department: ACCOUNTING
+	Employee Number: 45731
+	Employee Name: Leona
+Employee updated
+------------------------------
+Employee found
+*******EMPLOYEE DETAILS*******
+	Department: BUSINESS
+	Employee Number: 37503
+	Employee Name: Briar
+Employee updated
+------------------------------
+Employee found
+*******EMPLOYEE DETAILS*******
+	Department: HUMAN RESOURCES
+	Employee Number: 58509
+	Employee Name: Kailey
+Employee updated
+------------------------------
+Employee found
+*******EMPLOYEE DETAILS*******
+	Department: SALES
+	Employee Number: 58510
+	Employee Name: Liv
+Employee updated
+------------------------------
+Employee found
+*******EMPLOYEE DETAILS*******
+	Department: PRODUCTION
+	Employee Number: 44258
+	Employee Name: Anthony
+Employee updated
+------------------------------
+Employee not found
+------------------------------
+Employee not found
+------------------------------
+Employee not found
+------------------------------
+Employee not found
+------------------------------
+Employee not found
+------------------------------
+```
+
+---
+
+### Instructions
+Provided data files: smallOutput.txt, mediumOutput.txt, and largeOutput.txt. Each file is comprised of records representing an employee of a fictitious company, and follows these rules:
 * Each line represents the record of one employee. 
 * Each record is comprised of department number, employee number, and employee name. 
 * There are 5 possible departments: Accounting(0), Business(1), Human Resources(2), Sales(3), and Production(4). 
 * The maximum allowable employee name is 30 characters.
 
-Each file has an expected running time. See the examples section for more details.
-
-Instructions
 You will create a C++ class called ‘binaryFile’ that will implement methods that are described below. You must use a header file for the class which will contain the class definition, all structure and/or enumerator definitions, and header files necessary for execution.
 *	Read data from a file (described in the “Details” section above) and writes the data out to a binary file. (5 pts)
 *	Sort the binary file by department, and within each department sort in ascending order (0…100) by employee number. (10 pts)
