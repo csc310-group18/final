@@ -4,9 +4,9 @@ Our process:
 * Read employee records from txt file into separate linked lists for each department
 * Sort each linked list by employee ID
 * Write all records to binary file
-   * Ordred by department
-   * Ordered by employee ID within each department
-   * Index array created while writing binary for better search performance
+   * Order by department
+   * Order by employee ID within each department
+   * Create index array while writing binary for better search performance
 * Test functionality by reading employee records from test records file
 * Search for test records in binary file
    * If found, print employee details and change employee name
@@ -25,7 +25,7 @@ Beginning of **data/smallOutput.txt** employee records input txt file (*departme
 ...
 ```
 
-Sample execution using **data/SmallOutput.txt** as input file and searching for employee records in **/data/smallOutput_TestRecords.txt**, which includes 5 valid records and 5 records not found in input file:
+Sample execution using **data/SmallOutput.txt** as input file and searching for employee records in **data/smallOutput_TestRecords.txt**, which includes 5 valid records and 5 records not found in input file:
 
 ```
 ./excBinaryFile
